@@ -3,19 +3,13 @@ let app = express();
 
 const port = 3000;
 
+const sequelize = require('./config/db');
 
-/*
-    MÉTODO HTTP PARA RECUPERAR INFORMAÇÕES
-    /user -> retorna todos os usuários (ADM)
-    /user/:id -> retorna a informação do usuário id (ADM, próprio usuário)
-    /user/:id/registers -> retorna os registros do usuário id (ADM, próprio usuário)
-
-    MÉTODO HTTP PARA CRIAR RECURSOS
-    /user -> cria um usuário
-
-*/
-
-
+sequelize.authenticate().then(
+    console.log("conectei no banco")
+).catch(error => {
+    console.log("deu erro!")
+});
 
 
 
