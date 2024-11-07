@@ -4,13 +4,19 @@ let app = express();
 const port = 3000;
 
 const sequelize = require('./config/db');
+const Usuario = require('./models/usuario');
+const Ponto = require('./models/ponto');
 
-sequelize.authenticate().then(
-    console.log("conectei no banco")
-).catch(error => {
-    console.log("deu erro!")
+
+sequelize.sync({ alter: true })
+    .then(() => {
+        console.log("sync feito com sucesso");
+    })
+    .catch(error => { console.log("deu erro!")
 });
 
+
+const luca = Usuario.create({ nome: "luca", email: "lucacordella12@gmail.com", login: "luca", senha: "123"});
 
 
 app.get("/user/:id1-:id2", (req, res) => {
