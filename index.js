@@ -8,6 +8,9 @@ const Usuario = require('./models/usuario');
 const Ponto = require('./models/ponto');
 
 
+app.use(express.json());
+
+
 sequelize.sync({ alter: true })
     .then(() => {
         console.log("sync feito com sucesso");
@@ -16,24 +19,40 @@ sequelize.sync({ alter: true })
 });
 
 
-const luca = Usuario.create({ nome: "luca", email: "lucacordella12@gmail.com", login: "luca", senha: "123"});
+//const luca = Usuario.create({ nome: "luca", email: "lucacordella12@gmail.com", login: "luca", senha: "123"});
 
 
-app.get("/user/:id1-:id2", (req, res) => {
-    console.log(req.params);
-});
-
-app.post("/user/:id1-:id2", (req, res) => {
-    res.send(req.params);
-});
-
-app.get("/teste", (req, res) => {
-    res.send("Resposta da rota /teste");
+//Rota que recupera todos os usuários do sistema
+app.get('/usuarios', async (req, res) => {
+    
+    const usuarios = await Usuario.findAll();
+    res.json(usuarios);
 });
 
 
-app.post("/rotapost", (req, res) => {
-    res.send("Retorno da rota usando o método post");
+app.get('/usuario/:id_usuario', async (req, res) => {
+
+    const id_usuario = req.params.id_usuario;
+    
+    const usuario = await Usuario.findAll({
+        where: {
+            id_usuario: id_usuario
+        }
+    });
+
+    res.json(usuario);
+
+});
+
+
+// Rota qe adiciona um usuário
+app.post('/usuario', (req, res) => {
+    
+    
+    // 1 - recuperar as informações do usuário (req.body)
+    // 2 - Crirar uma entrada no BD com as informações do usuário (Usuario.create({...}))
+    // 3 - Retornar para o cliente o usuário criado (res.json resultado do create))
+
 });
 
 
