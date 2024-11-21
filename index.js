@@ -7,8 +7,11 @@ const sequelize = require('./config/db');
 const Usuario = require('./models/usuario');
 const Ponto = require('./models/ponto');
 
+const cors = require('cors');
+
 
 app.use(express.json());
+app.use(cors());
 
 
 sequelize.sync({ alter: true })
@@ -46,13 +49,17 @@ app.get('/usuario/:id_usuario', async (req, res) => {
 
 
 // Rota qe adiciona um usuário
-app.post('/usuario', (req, res) => {
+app.post('/usuario', async (req, res) => {
     
-    
-    // 1 - recuperar as informações do usuário (req.body)
-    // 2 - Crirar uma entrada no BD com as informações do usuário (Usuario.create({...}))
-    // 3 - Retornar para o cliente o usuário criado (res.json resultado do create))
+    const usuario = await Usuario.create({
+        nome: req.body.nome,
+        email: req.body.email,
+        senha: req.body.senha,
+        login: req.body.login
+    });
 
+
+    res.json(usuario);
 });
 
 
