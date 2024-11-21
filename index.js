@@ -62,6 +62,58 @@ app.post('/usuario', async (req, res) => {
     res.json(usuario);
 });
 
+//Rota que atualiza um usuário
+app.put('/usuario/:id_usuario', async (req, res) => {
+
+    //1 - Recupera o usuario de id "id_usuario" (busca no bd)
+    const usuario = await Usuario.findByPk(req.params.id_usuario);
+
+    //2 - Atualiza a istância do usuario
+    const usuarioAtualizado = await usuario.update({        
+        nome: req.body.nome,
+        email: req.body.email,
+        senha: req.body.senha,
+        login: req.body.login
+    });
+    
+    res.json(usuarioAtualizado);
+});
+
+
+//Rota que deleta um usuário específico
+app.delete('/usuario/:id_usuario', async (req, res) => {
+
+    //1 - Procure o usuário pela chave primaria (req.params.id_usuario) (findByPk)
+    const usuario = await Usuario.findByPk(req.params.id_usuario);
+    
+    //2 - Remova a instância retornada pela busca com a chave primária (método destroy())
+    usuario.destroy();
+    
+    //3 - Retorne um texto para o usuário com sucesso ou fracasso
+    res.send(`Usuário com id ${req.params.id_usuario} removido com sucesso`)
+});
+
+
+//Rota que busca todos os pontos
+app.get('/ponto', async (req, res) => {
+
+    const pontos = await Ponto.findAll();
+    res.send(pontos);
+
+});
+
+
+//Rota que busca um ponto específico
+app.get('/ponto/:id_ponto', async (req, res) => {
+
+    const ponto = await Ponto.findByPk(req.params.id_ponto);
+    res.send(ponto);
+
+});
+
+
+//Rotas: atualiza um ponto específico e deleta um ponto específico
+
 
 app.listen(port, () => {
     console.log(`servidor escutando a porta ${port}`);
