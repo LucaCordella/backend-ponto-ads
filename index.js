@@ -14,15 +14,18 @@ app.use(express.json());
 app.use(cors());
 
 
+// Um usuário pode ter muitos Pontos
+Usuario.hasMany(Ponto);
+// Um ponto pertence sempre a um único usuário
+Ponto.belongsTo(Usuario);
+
+
 sequelize.sync({ alter: true })
     .then(() => {
         console.log("sync feito com sucesso");
     })
     .catch(error => { console.log("deu erro!")
 });
-
-
-//const luca = Usuario.create({ nome: "luca", email: "lucacordella12@gmail.com", login: "luca", senha: "123"});
 
 
 //Rota que recupera todos os usuários do sistema
@@ -33,6 +36,7 @@ app.get('/usuarios', async (req, res) => {
 });
 
 
+//Rota que recupera um usuário específico  
 app.get('/usuario/:id_usuario', async (req, res) => {
 
     const id_usuario = req.params.id_usuario;
@@ -42,13 +46,11 @@ app.get('/usuario/:id_usuario', async (req, res) => {
             id_usuario: id_usuario
         }
     });
-
     res.json(usuario);
-
 });
 
 
-// Rota qe adiciona um usuário
+// Rota que adiciona um usuário
 app.post('/usuario', async (req, res) => {
     
     const usuario = await Usuario.create({
@@ -85,12 +87,21 @@ app.delete('/usuario/:id_usuario', async (req, res) => {
 
     //1 - Procure o usuário pela chave primaria (req.params.id_usuario) (findByPk)
     const usuario = await Usuario.findByPk(req.params.id_usuario);
-    
     //2 - Remova a instância retornada pela busca com a chave primária (método destroy())
     usuario.destroy();
-    
     //3 - Retorne um texto para o usuário com sucesso ou fracasso
-    res.send(`Usuário com id ${req.params.id_usuario} removido com sucesso`)
+    res.send(`Usuário com id ${req.params.id_usuario} removido com sucesso!`)
+});
+
+
+// Rota que cria um ponto (???)
+app.post('/ponto/:id_usuario', async (req, res) => {
+    const ponto = Ponto.create({
+        dataHora: req.body.dataHora,
+        tipo: req.body.tipo,
+        userId: req.params.id_usuario // Ao invés de recuperar da url, recuperar do body
+    });
+    res.send(ponto);
 });
 
 
@@ -112,9 +123,20 @@ app.get('/ponto/:id_ponto', async (req, res) => {
 });
 
 
-//Rotas: atualiza um ponto específico e deleta um ponto específico
+// Rota que atualiza um ponto específico (id_ponto)
+app.put('/ponto/:id_ponto', async (req, res) => {
+    const ponto = await Ponto.findByPk(req.params.id_ponto);
+    const pontoAtualizado = ponto.update({
+
+    });
+    res.send(pontoAtualizado);
+});
 
 
-app.listen(port, () => {
-    console.log(`servidor escutando a porta ${port}`);
+// Rota que deleta um ponto específico (id_ponto)
+app.delete('/ponto/:id_ponto', async (req, res) => {
+    const ponto = Ponto.findByPk(req.params.id_ponto);
+    ponto.destroy();
+
+    res.send(`o ponto com id ${req.params.id_ponto} foi excluido com sucesso`);
 });
