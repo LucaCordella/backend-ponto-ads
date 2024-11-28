@@ -39,3 +39,4 @@ const Ponto = sequelize.define('Ponto', {
     timestamps: true
 });
 
+module.exports = Ponto;
